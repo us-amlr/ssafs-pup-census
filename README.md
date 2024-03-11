@@ -4,7 +4,9 @@ South Shetland Antarctic fur seal (SSAFS) total synoptic pup counts. This reposi
 
 These data are in the process of being published to the SCAR Antarctic Biodiversity Portal at [biodiversity.aq](https://www.biodiversity.aq/).
 
-This data set was originally published in [Krause et al. 2022](https://doi.org/10.3389/fmars.2021.796488). See this manuscript for descriptions of methods, other context, etc.
+This data set was originally published in [Krause et al. 2022](https://doi.org/10.3389/fmars.2021.796488). See this manuscript for descriptions of or references to methods, other context, etc.
+
+Meeting notes and decisions can be found [here](https://docs.google.com/document/d/1MU3mVxg_tjE_4HEOOJUf_ttoTV5eUMsgirkhnyg0oZY/edit?usp=sharing) (project authors only).
 
 ## data
 
