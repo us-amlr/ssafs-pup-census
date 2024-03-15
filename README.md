@@ -1,10 +1,10 @@
 # ssafs-pup-census
 
-South Shetland Antarctic fur seal (SSAFS) total synoptic pup counts. This repository is an R project that contains the data, code, and documentation relevant to the SSAFS synoptic pup counts data set. Repo contents and structure are described below.
+South Shetland Antarctic fur seal (SSAFS) total synoptic pup counts. This repository is an R project that contains the data, code, and documentation relevant to the SSAFS pup census data set. Repo contents and structure are described below.
 
 These data are in the process of being published to the SCAR Antarctic Biodiversity Portal at [biodiversity.aq](https://www.biodiversity.aq/).
 
-This data set was originally published in [Krause et al. 2022](https://doi.org/10.3389/fmars.2021.796488). See this manuscript for descriptions of or references to methods, other context, etc.
+An earlier version of this data set was published in [Krause et al. 2022](https://doi.org/10.3389/fmars.2021.796488). See this manuscript for additional descriptions of or references to methods, other context, etc.
 
 Meeting notes and decisions can be found [here](https://docs.google.com/document/d/1MU3mVxg_tjE_4HEOOJUf_ttoTV5eUMsgirkhnyg0oZY/edit?usp=sharing) (project authors only).
 
@@ -18,15 +18,15 @@ SSAFS Pup Census Darwin Core Archive files. These data are published at <TODO>. 
 
 ### ssafs-pup-counts-full.csv
 
-[ssafs-pup-counts-full.csv](data/ssafs-pup-counts-full.csv) is the full SSAFS Pup Census dataset, in as a long data CSV file. This files contains four columns:
+[ssafs-pup-counts-full.csv](data/ssafs-pup-counts-full.csv) is the full SSAFS Pup Census dataset, presented as a long data CSV file. This file contains four columns:
 
--   season_name: the season of the census. For instance, "2022/23" means the census happened during the 2022-2023 austral summer.
+-   season_name: the season of the census. For instance, "2022/23" means the census happened during the 2022-2023 austral summer (late December or early January).
 
 -   location: the location of the census. SSI means South Shetland Islands, STI means San Telmo Islets, and CS means Cape Shirreff.
 
 -   count, sd: The census count and standard deviation values, respectively. Standard deviation values only exist when all individual observer census counts are available.
 
--   reference: The reference in which the census count was originally published, if applicable. Records without a reference value are all U.S. AMLR data.
+-   reference: The reference in which the census count was originally published, as applicable. All records without a reference are from the U.S. AMLR Program at Cape Shirreff.
 
 ### input
 
@@ -34,7 +34,7 @@ Input files used by [create-ssafs-pup_census.R](R/create-ssafs-pup_census.R) to 
 
 -   [supptable1-counts.csv](data/input/supptable1-counts.csv) contains the counts from [Krause et al. 2022](https://doi.org/10.3389/fmars.2021.796488) Supplementary Table 1, copied as long data into a CSV file. [supptable1-references.csv](data/input/supptable1-references.csv) is the reference key for the letter-reference pairs presented in Supplementary Table 1. The data in these CSV files can be joined using the 'ReferenceLetter' column.
 
--   [other-counts.csv](data/input/other-counts.csv) contains other SSAFS pup census counts. Here, 'other counts' means counts that are not a) presented in [Krause et al. 2022](https://doi.org/10.3389/fmars.2021.796488) Supplementary Table 1 or b) of SSAFS at Cape Shirreff stored in the U.S. AMLR Pinnipeds database.
+-   [other-counts.csv](data/input/other-counts.csv) contains other SSAFS pup census counts. Here, 'other counts' means counts that are not a) presented in [Krause et al. 2022](https://doi.org/10.3389/fmars.2021.796488) Supplementary Table 1, or b) of SSAFS at Cape Shirreff recorded in the U.S. AMLR Pinnipeds database.
 
 ## Code
 
