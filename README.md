@@ -26,7 +26,7 @@ SSAFS Pup Census Darwin Core Archive files. These data are published at <TODO>. 
 
 -   count, sd: The census count and standard deviation values, respectively. Standard deviation values only exist when all individual observer census counts are available.
 
--   reference: The reference in which the census count was originally published, as applicable. All records without a reference are from the U.S. AMLR Program at Cape Shirreff.
+-   reference: The reference in which the census count was originally published, as applicable. All records without a reference were collected by the [U.S. AMLR Program](https://www.fisheries.noaa.gov/international/science-data/pinniped-research-antarctic), following sampling protocols described in [Krause et al. 2022](https://doi.org/10.3389/fmars.2021.796488) or [Krause and Hinke 2021](https://doi.org/10.1578/AM.47.4.2021.349) for Cape Shirreff and San Telmo Islets counts, respectively.
 
 ### input
 

@@ -50,3 +50,4 @@ rsconnect/
 
 # SMW additions
 references/**
+*.dsn

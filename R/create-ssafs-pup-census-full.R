@@ -52,7 +52,7 @@ supp.table1 <- left_join(st1.counts, st1.refs,
 
 #-------------------------------------------------------------------------------
 # Pull data from database, from 2008/09 and onwards
-con <- amlr_dbConnect(Database = "***REMOVED***")
+con <- DBI::dbConnect(odbc::odbc(), filedsn = here("***REMOVED***-***REMOVED***.dsn"))
 cs.counts.view <- tbl(con, "vCensus_AFS_Capewide_Pup") %>%
   filter(exclude_count == 0) %>%
   arrange(census_date, observer, location) %>%
@@ -62,10 +62,10 @@ cs.counts <- cwp_total(cs.counts.view) %>%
   mutate(count_mean = round_logical(count_mean, 0),
          count_sd = round_logical(count_sd, 2), 
          location = "CS", 
-         census_date_est = amlr_date_from_season(season_name, m = 1, d = 1)) %>% 
-  filter(census_date_est > ymd("2008-07-01")) %>% 
+         census_date_tmp = amlr_date_from_season(season_name, m = 1, d = 1)) %>% 
+  filter(census_date_tmp > ymd("2008-07-01")) %>% 
   rename(count = count_mean, sd = count_sd) %>% 
-  select(-c(census_date_est, research_program))
+  select(-c(census_date_tmp, research_program))
 
 
 #-------------------------------------------------------------------------------
