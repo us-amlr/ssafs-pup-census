@@ -48,9 +48,6 @@ census.dates <- tbl(con, "vCensus_AFS_Capewide_Pup") %>%
   collect() %>% 
   group_by(season_name) %>% 
   summarise(census_date_start = min(census_date), 
-            # census_date_end = max(census_date), 
-            # census_days = as.numeric(difftime(census_date_end, census_date_start, 
-            #                                   units = "days")), 
             .groups = "drop")
 
 
@@ -94,6 +91,13 @@ event <- x %>%
            nchar(eventDate) == 7 ~ glue("January {season_int+1}"),
            .default = NA_character_
          ), 
+         eventRemarks = case_when(
+           eventID == "2021/22-CS" ~ 
+             paste("Note that census was conducted earlier", 
+                   "due to field season timing constraints"), 
+           nchar(verbatimEventDate) == 12 ~ "census date assumed", 
+           .default = NA_character_
+         ), 
          samplingProtocol = case_when(
            season_int >= 2008 & location == "CS" ~ 
              "https://doi.org/10.3389/fmars.2021.796488", 
@@ -107,7 +111,7 @@ event <- x %>%
 
 # write to file
 write_tsv(event, here("data", "dwca", "event.txt"), na = "")
-write_csv(event, here("data", "dwca", "event.csv"), na = "")
+# write_csv(event, here("data", "dwca", "event.csv"), na = "")
 
 
 #-------------------------------------------------------------------------------
@@ -131,18 +135,9 @@ occ <- x %>%
              "the standard deviation of the individual counts is:",  sd), 
            .default = NA_character_), 
          identificationReferences = "https://doi.org/10.1016/C2012-0-06919-0") %>% 
-  # associatedReferences = case_when(
-  #   (associatedReferences == "") & between(season_int, 2008, 2020) ~ 
-  #     "https://doi.org/10.3389/fmars.2021.796488", 
-  #   (season_int == 2022) ~ "https://doi.org/10.1111/mam.12327", 
-  #   between(season_int, 2010, 2020) & grepl("STI", eventID) ~ 
-  #     "https://doi.org/10.1578/AM.47.4.2021.349", 
-  #   .default = associatedReferences
-  # )) %>% 
-  # relocate(individualCount, sd, .after = sex) %>% 
   relocate(occurrenceID, .before = eventID) %>% 
   select(-c(count, sd, season_int))
 
 # write to file
 write_tsv(occ, here("data", "dwca", "occurrence.txt"), na = "")
-write_csv(occ, here("data", "dwca", "occurrence.csv"), na = "")
+# write_csv(occ, here("data", "dwca", "occurrence.csv"), na = "")
