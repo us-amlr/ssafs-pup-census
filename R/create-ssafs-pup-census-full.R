@@ -6,6 +6,7 @@ library(readr)
 library(lubridate)
 library(stringr)
 library(tamatoamlr)
+library(odbc)
 
 
 ################################################################################
@@ -52,11 +53,21 @@ supp.table1 <- left_join(st1.counts, st1.refs,
 
 #-------------------------------------------------------------------------------
 # Pull data from database, from 2008/09 and onwards
-con <- DBI::dbConnect(odbc::odbc(), filedsn = here("***REMOVED***-***REMOVED***.dsn"))
+con <- dbConnect(odbc(), filedsn = here("amlr-pinniped-db-prod.dsn"))
 cs.counts.view <- tbl(con, "vCensus_AFS_Capewide_Pup") %>%
   filter(exclude_count == 0) %>%
+  filter(season_name != "2024/25") %>%
   arrange(census_date, observer, location) %>%
   collect()
+
+dates <- cs.counts.view %>% 
+  filter(census_date > as.Date("2008-07-01")) %>% 
+  group_by(season_name) %>% 
+  summarise(census_date_start = min(census_date), 
+            census_date_end = max(census_date), 
+            census_days = as.numeric(difftime(census_date_end, census_date_start, 
+                                              units = "days")), 
+            .groups = "drop")
 
 cs.counts <- cwp_total(cs.counts.view) %>%
   mutate(count_mean = round_logical(count_mean, 0),
@@ -84,7 +95,17 @@ stopifnot(
 ################################################################################
 # Combine data sets, and write to CSV file
 ssafs.pup.counts <- bind_rows(supp.table1, cs.counts, other.counts) %>% 
+  mutate(season_int = as.numeric(substr(season_name, 1, 4)), 
+         reference = case_when(
+           is.na(reference) & between(season_int, 2008, 2020) ~ 
+             "https://doi.org/10.3389/fmars.2021.796488", 
+           (season_int == 2022) ~ "https://doi.org/10.1111/mam.12327", 
+           # between(season_int, 2010, 2020) & (location == "STI") ~ 
+           #   "https://doi.org/10.1578/AM.47.4.2021.349", 
+           .default = reference
+         )) %>% 
   arrange(season_name, location)
+
 
 stopifnot(
   all(nchar(ssafs.pup.counts$season_name) == 7), 

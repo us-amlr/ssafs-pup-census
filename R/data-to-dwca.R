@@ -4,12 +4,15 @@ library(dplyr)
 library(worrms)
 library(here)
 library(readr)
+library(glue)
+library(odbc)
 
 
 #-------------------------------------------------------------------------------
 # Read CSV data, prep WoRMS and geography data frames
 x <- read.csv(here("data", "ssafs-pup-counts-full.csv")) %>% 
-  mutate(eventID = paste(season_name, location, sep = "-"))
+  mutate(eventID = paste(season_name, location, sep = "-"), 
+         season_int = as.numeric(substr(season_name, 1, 4)))
 
 
 matched_taxa <- bind_rows(wm_records_names("Arctocephalus gazella")) %>% 
@@ -29,7 +32,7 @@ geography <- data.frame(
     "Cape Shirreff, Livingston Island"), 
   higherGeography = c(
     "Antarctica | South Shetland Islands", 
-    "Antarctica | South Shetland Islands | San Telmo Island", 
+    "Antarctica | South Shetland Islands | San Telmo Islands", 
     "Antarctica | South Shetland Islands | Cape Shirreff, Livingston Island"),
   higherGeographyID = c(
     "https://data.aad.gov.au/aadc/gaz/scar/display_name.cfm?gaz_id=131934", 
@@ -37,21 +40,60 @@ geography <- data.frame(
     "https://data.aad.gov.au/aadc/gaz/scar/display_name.cfm?gaz_id=131551")
 )
 
+# Get start dates as possible
+con <- dbConnect(odbc(), filedsn = here("amlr-pinniped-db-prod.dsn"))
+census.dates <- tbl(con, "vCensus_AFS_Capewide_Pup") %>%
+  filter(exclude_count == 0, 
+         census_date > as.Date("2008-07-01")) %>% 
+  collect() %>% 
+  group_by(season_name) %>% 
+  summarise(census_date_start = min(census_date), 
+            # census_date_end = max(census_date), 
+            # census_days = as.numeric(difftime(census_date_end, census_date_start, 
+            #                                   units = "days")), 
+            .groups = "drop")
+
+
+#-------------------------------------------------------------------------------
+# Event info prep
+eventID.jan.early <- c(
+  "2001/02-CS", "2001/02-STI",
+  "2007/08-CS", "2007/08-SSI", "2007/08-STI"
+)
+eventID.jan.late <- c("1958/59-CS", "1965/66-CS")
+
+eventID.feb.early <- c(
+  "1986/87-CS", "1986/87-SSI", "1986/87-STI", "1995/96-SSI", "1995/96-STI", 
+  "2001/02-SSI"
+)
+eventID.feb.mid <- c("1970/71-CS", "1972/73-CS", "1972/73-STI")
+eventID.feb.late <- c("1991/92-SSI", "1991/92-STI")
+eventID.feb <- c(eventID.feb.early, eventID.feb.mid, eventID.feb.late)
+
 
 #-------------------------------------------------------------------------------
 # Create Event table
 event <- x %>% 
-  select(eventID, season_name, location, reference) %>% 
+  select(eventID, season_name, location, reference, season_int) %>% 
   left_join(geography, by = join_by(location)) %>% 
-  mutate(eventDate = NA, 
-         eventRemarks = NA_character_, 
-         sampleSizeValue = NA_integer_,
-         sampleSizeUnit = ifelse(sampleSizeValue <= 1, "day", "days"), 
-         # TODO: fix dates and sampleSizeValues
-         continent = "Antarctica",
+  left_join(census.dates, by = join_by(season_name)) %>% 
+  mutate(continent = "Antarctica",
          countryCode = "AQ",
          geodeticDatum = "EPSG:4326", 
-         season_int = as.numeric(substr(x$season_name, 1, 4)), 
+         eventDate = case_when(
+           !is.na(census_date_start) ~ as.character(census_date_start), 
+           eventID %in% eventID.feb ~ glue("{season_int+1}-02"), 
+           .default = glue("{season_int+1}-01")
+         ), 
+         verbatimEventDate = case_when(
+           eventID %in% eventID.jan.early ~ glue("early January {season_int+1}"), 
+           eventID %in% eventID.jan.late ~ glue("late January {season_int+1}"), 
+           eventID %in% eventID.feb.early ~ glue("early February {season_int+1}"), 
+           eventID %in% eventID.feb.mid ~ glue("mid February {season_int+1}"), 
+           eventID %in% eventID.feb.late ~ glue("late February {season_int+1}"), 
+           nchar(eventDate) == 7 ~ glue("January {season_int+1}"),
+           .default = NA_character_
+         ), 
          samplingProtocol = case_when(
            season_int >= 2008 & location == "CS" ~ 
              "https://doi.org/10.3389/fmars.2021.796488", 
@@ -61,30 +103,46 @@ event <- x %>%
          )) %>% 
   arrange(eventID) %>% 
   select(eventID, everything()) %>% 
-  select(-c(season_name, location, reference, season_int))
+  select(-c(season_name, location, reference, season_int, census_date_start))
 
 # write to file
 write_tsv(event, here("data", "dwca", "event.txt"), na = "")
+write_csv(event, here("data", "dwca", "event.csv"), na = "")
 
 
 #-------------------------------------------------------------------------------
 # Create Occurrence table
 occ <- x %>% 
-  select(eventID, count, sd, reference) %>% 
-  rename(individualCount = count, 
-         associatedReferences = reference) %>% 
+  select(eventID, count, sd, reference, season_int) %>% 
+  rename(associatedReferences = reference) %>% 
   bind_cols(matched_taxa) %>% 
   mutate(occurrenceID = paste(eventID, "SSAFS-pups", sep = "-"), 
          vernacularName = "South Shetland Antarctic fur seal", 
-         #TODO: confirm basisOfRecord for averaged counts
-         basisOfRecord = NA_character_, 
-         # TODO confirm identificationReferences based on SSAFS strategy
-         identificationReferences = "https://doi.org/10.1016/C2012-0-06919-0", 
+         organismName = "South Shetland Islands Antarctic fur seal subpopulation", 
+         organismScope = "subpopulation", 
+         basisOfRecord = "HumanObservation", 
          occurrenceStatus = "present",
          lifeStage = "pup",
-         sex = "indeterminate") %>% 
-  relocate(individualCount, sd, .after = sex) %>% 
-  relocate(occurrenceID, .before = eventID)
+         sex = "indeterminate", 
+         organismQuantity = count, 
+         organismQuantityType = "average individual count", 
+         occurrenceRemarks = case_when(
+           !is.na(sd) ~ paste(
+             "the standard deviation of the individual counts is:",  sd), 
+           .default = NA_character_), 
+         identificationReferences = "https://doi.org/10.1016/C2012-0-06919-0") %>% 
+  # associatedReferences = case_when(
+  #   (associatedReferences == "") & between(season_int, 2008, 2020) ~ 
+  #     "https://doi.org/10.3389/fmars.2021.796488", 
+  #   (season_int == 2022) ~ "https://doi.org/10.1111/mam.12327", 
+  #   between(season_int, 2010, 2020) & grepl("STI", eventID) ~ 
+  #     "https://doi.org/10.1578/AM.47.4.2021.349", 
+  #   .default = associatedReferences
+  # )) %>% 
+  # relocate(individualCount, sd, .after = sex) %>% 
+  relocate(occurrenceID, .before = eventID) %>% 
+  select(-c(count, sd, season_int))
 
 # write to file
 write_tsv(occ, here("data", "dwca", "occurrence.txt"), na = "")
+write_csv(occ, here("data", "dwca", "occurrence.csv"), na = "")
