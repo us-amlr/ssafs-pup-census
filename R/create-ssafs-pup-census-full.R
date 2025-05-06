@@ -95,12 +95,12 @@ stopifnot(
 ################################################################################
 # Combine data sets, and write to CSV file
 ssafs.pup.counts <- bind_rows(supp.table1, cs.counts, other.counts) %>% 
-  mutate(season_int = as.numeric(substr(season_name, 1, 4)), 
+  mutate(season_year = amlr_year_from_season(season_name), 
          reference = case_when(
-           is.na(reference) & between(season_int, 2008, 2020) ~ 
+           is.na(reference) & between(season_year, 2009, 2020) ~ 
              "https://doi.org/10.3389/fmars.2021.796488", 
-           (season_int == 2022) ~ "https://doi.org/10.1111/mam.12327", 
-           # between(season_int, 2010, 2020) & (location == "STI") ~ 
+           (season_year == 2023) ~ "https://doi.org/10.1111/mam.12327", 
+           # between(season_year, 2010, 2020) & (location == "STI") ~ 
            #   "https://doi.org/10.1578/AM.47.4.2021.349", 
            .default = reference
          )) %>% 

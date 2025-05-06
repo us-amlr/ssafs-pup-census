@@ -253,7 +253,7 @@
     },
     "amlrDatabases": {
       "Package": "amlrDatabases",
-      "Version": "0.7.0.9000",
+      "Version": "0.7.1.9000",
       "Source": "GitHub",
       "Title": "General Functions for US AMLR Database Packages",
       "Authors@R": "person(\"Sam\", \"Woodman\", email = \"sam.woodman@noaa.gov\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0001-6071-8186\"))",
@@ -271,12 +271,14 @@
         "pool",
         "purrr",
         "shiny (>= 1.5.0)",
-        "shinydashboard"
+        "shinydashboard",
+        "stringr"
       ],
-      "License": "CC0",
+      "License": "Apache License (== 2)",
       "Encoding": "UTF-8",
       "Roxygen": "list(markdown = TRUE)",
       "RoxygenNote": "7.3.2",
+      "LazyData": "true",
       "Author": "Sam Woodman [aut, cre] (<https://orcid.org/0000-0001-6071-8186>)",
       "Maintainer": "Sam Woodman <sam.woodman@noaa.gov>",
       "RemoteType": "github",
@@ -284,7 +286,7 @@
       "RemoteUsername": "us-amlr",
       "RemoteRepo": "amlrDatabases",
       "RemoteRef": "main",
-      "RemoteSha": "ad6263b458034adee658c803615a198ece1c52cf"
+      "RemoteSha": "c02d9c9ed00df64035c4e936e81554a9ab417ace"
     },
     "askpass": {
       "Package": "askpass",
@@ -3273,6 +3275,7 @@
         "glue",
         "ggplot2",
         "lubridate",
+        "odbc",
         "pool",
         "purrr",
         "rlang",
@@ -3299,7 +3302,7 @@
       "RemoteUsername": "us-amlr",
       "RemoteRepo": "tamatoamlr",
       "RemoteRef": "HEAD",
-      "RemoteSha": "6cad79ce4ba25166b5159bdc7d4ae338d3758959",
+      "RemoteSha": "29550aef44adc7b2bc0f01848d31ffffea572eda",
       "RemoteHost": "api.github.com",
       "Remotes": "us-amlr/amlrDatabases"
     },
@@ -3615,7 +3618,7 @@
     },
     "utf8": {
       "Package": "utf8",
-      "Version": "1.2.4",
+      "Version": "1.2.5",
       "Source": "Repository",
       "Title": "Unicode Text Processing",
       "Authors@R": "c(person(given = c(\"Patrick\", \"O.\"), family = \"Perry\", role = c(\"aut\", \"cph\")), person(given = \"Kirill\", family = \"M\\u00fcller\", role = \"cre\", email = \"kirill@cynkra.com\"), person(given = \"Unicode, Inc.\", role = c(\"cph\", \"dtc\"), comment = \"Unicode Character Database\"))",
@@ -3638,7 +3641,7 @@
       "VignetteBuilder": "knitr, rmarkdown",
       "Config/testthat/edition": "3",
       "Encoding": "UTF-8",
-      "RoxygenNote": "7.2.3",
+      "RoxygenNote": "7.3.2.9000",
       "NeedsCompilation": "yes",
       "Author": "Patrick O. Perry [aut, cph], Kirill Müller [cre], Unicode, Inc. [cph, dtc] (Unicode Character Database)",
       "Maintainer": "Kirill Müller <kirill@cynkra.com>",

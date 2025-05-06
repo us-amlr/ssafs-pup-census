@@ -1,18 +1,19 @@
-rm(list = ls()) #clear out the workspace
-setwd("C:/Users/DKFIELD.SWC-KRAUSEFLD-L/Documents/R/R Working Directory/AFS Pup Mortality")
-
 # This is code to plot the three SSI census data, i.e., pup counts from Cape
 # Shirreff (CS), San Telmo Islets (STI), and the South Shetland Islands (SSI)
 
-data <-read.csv("~/Research/AFS Pup Mortality/AFS Pup Census Data/Pupplotdata.csv", 
-                header=TRUE, stringsAsFactors=TRUE)
-datacs <-read.csv("~/Research/AFS Pup Mortality/AFS Pup Census Data/Pupplotdata_cs_2023.csv", 
-                header=TRUE, stringsAsFactors=TRUE)
-dataman <-read.csv("~/Research/AFS Pup Mortality/AFS Pup Census Data/Pupplotdata_sti man.csv", 
-                  header=TRUE, stringsAsFactors=TRUE)
-
-# Load ggplot2
+library(dplyr)
 library(ggplot2)
+library(here)
+
+data <- read.csv(here("data", "ssafs-pup-counts-full.csv")) %>% 
+  mutate(Year = as.numeric(substr(season_name, 1, 4)) + 1)
+#   
+# data <-read.csv("~/Research/AFS Pup Mortality/AFS Pup Census Data/Pupplotdata.csv", 
+#                 header=TRUE, stringsAsFactors=TRUE)
+# datacs <-read.csv("~/Research/AFS Pup Mortality/AFS Pup Census Data/Pupplotdata_cs_2023.csv", 
+#                 header=TRUE, stringsAsFactors=TRUE)
+# dataman <-read.csv("~/Research/AFS Pup Mortality/AFS Pup Census Data/Pupplotdata_sti man.csv", 
+#                   header=TRUE, stringsAsFactors=TRUE)
 
 # Create a comparative line graph with three lines filled by location
 

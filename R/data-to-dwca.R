@@ -11,8 +11,7 @@ library(odbc)
 #-------------------------------------------------------------------------------
 # Read CSV data, prep WoRMS and geography data frames
 x <- read.csv(here("data", "ssafs-pup-counts-full.csv")) %>% 
-  mutate(eventID = paste(season_name, location, sep = "-"), 
-         season_int = as.numeric(substr(season_name, 1, 4)))
+  mutate(eventID = paste(season_name, location, sep = "-"))
 
 
 matched_taxa <- bind_rows(wm_records_names("Arctocephalus gazella")) %>% 
@@ -71,7 +70,7 @@ eventID.feb <- c(eventID.feb.early, eventID.feb.mid, eventID.feb.late)
 #-------------------------------------------------------------------------------
 # Create Event table
 event <- x %>% 
-  select(eventID, season_name, location, reference, season_int) %>% 
+  select(eventID, season_name, location, reference, season_year) %>% 
   left_join(geography, by = join_by(location)) %>% 
   left_join(census.dates, by = join_by(season_name)) %>% 
   mutate(continent = "Antarctica",
@@ -79,16 +78,16 @@ event <- x %>%
          geodeticDatum = "EPSG:4326", 
          eventDate = case_when(
            !is.na(census_date_start) ~ as.character(census_date_start), 
-           eventID %in% eventID.feb ~ glue("{season_int+1}-02"), 
-           .default = glue("{season_int+1}-01")
+           eventID %in% eventID.feb ~ glue("{season_year}-02"), 
+           .default = glue("{season_year}-01")
          ), 
          verbatimEventDate = case_when(
-           eventID %in% eventID.jan.early ~ glue("early January {season_int+1}"), 
-           eventID %in% eventID.jan.late ~ glue("late January {season_int+1}"), 
-           eventID %in% eventID.feb.early ~ glue("early February {season_int+1}"), 
-           eventID %in% eventID.feb.mid ~ glue("mid February {season_int+1}"), 
-           eventID %in% eventID.feb.late ~ glue("late February {season_int+1}"), 
-           nchar(eventDate) == 7 ~ glue("January {season_int+1}"),
+           eventID %in% eventID.jan.early ~ glue("early January {season_year}"), 
+           eventID %in% eventID.jan.late ~ glue("late January {season_year}"), 
+           eventID %in% eventID.feb.early ~ glue("early February {season_year}"), 
+           eventID %in% eventID.feb.mid ~ glue("mid February {season_year}"), 
+           eventID %in% eventID.feb.late ~ glue("late February {season_year}"), 
+           nchar(eventDate) == 7 ~ glue("January {season_year}"),
            .default = NA_character_
          ), 
          eventRemarks = case_when(
@@ -99,15 +98,15 @@ event <- x %>%
            .default = NA_character_
          ), 
          samplingProtocol = case_when(
-           season_int >= 2008 & location == "CS" ~ 
+           season_year >= 2009 & location == "CS" ~ 
              "https://doi.org/10.3389/fmars.2021.796488", 
-           season_int >= 2008 & location == "STI" ~ 
+           season_year >= 2009 & location == "STI" ~ 
              "https://doi.org/10.1578/AM.47.4.2021.349", 
            .default = reference
          )) %>% 
   arrange(eventID) %>% 
   select(eventID, everything()) %>% 
-  select(-c(season_name, location, reference, season_int, census_date_start))
+  select(-c(season_name, location, reference, season_year, census_date_start))
 
 # write to file
 write_tsv(event, here("data", "dwca", "event.txt"), na = "")
@@ -117,7 +116,7 @@ write_tsv(event, here("data", "dwca", "event.txt"), na = "")
 #-------------------------------------------------------------------------------
 # Create Occurrence table
 occ <- x %>% 
-  select(eventID, count, sd, reference, season_int) %>% 
+  select(eventID, count, sd, reference) %>% 
   rename(associatedReferences = reference) %>% 
   bind_cols(matched_taxa) %>% 
   mutate(occurrenceID = paste(eventID, "SSAFS-pups", sep = "-"), 
@@ -136,7 +135,7 @@ occ <- x %>%
            .default = NA_character_), 
          identificationReferences = "https://doi.org/10.1016/C2012-0-06919-0") %>% 
   relocate(occurrenceID, .before = eventID) %>% 
-  select(-c(count, sd, season_int))
+  select(-c(count, sd))
 
 # write to file
 write_tsv(occ, here("data", "dwca", "occurrence.txt"), na = "")
