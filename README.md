@@ -1,5 +1,12 @@
 # ssafs-pup-census
 
+<!-- badges: start 
+[![DwCA](https://img.shields.io/badge/DwC–A%20Dataset-10.48361/gklk1u-violet)](https://doi.org/10.48361/gklk1u)
+-->
+DwCA DOI: in progress 
+[![DOI](https://zenodo.org/badge/713157807.svg)](https://doi.org/10.5281/zenodo.15320134)
+<!-- badges: end -->
+
 South Shetland Antarctic fur seal (SSAFS) total synoptic pup counts. This repository is an R project that contains the data, code, and documentation relevant to the SSAFS pup census data set. Repo contents and structure are described below.
 
 These data are in the process of being published to the SCAR Antarctic Biodiversity Portal at [biodiversity.aq](https://www.biodiversity.aq/).
