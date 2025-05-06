@@ -28,6 +28,8 @@ SSAFS Pup Census Darwin Core Archive files. These data are published at <TODO>. 
 
 -   reference: The reference in which the census count was originally published, as applicable. All records without a reference were collected by the [U.S. AMLR Program](https://www.fisheries.noaa.gov/international/science-data/pinniped-research-antarctic), following sampling protocols described in [Krause et al. 2022](https://doi.org/10.3389/fmars.2021.796488) or [Krause and Hinke 2021](https://doi.org/10.1578/AM.47.4.2021.349) for Cape Shirreff and San Telmo Islets counts, respectively.
 
+-   season_year: The 'AMLR year' of the austral summer field season. The AMLR year is the year that begins in January. For instance, for the '2000/01' season, the AMLR year is '2001.
+
 ### input
 
 Input files used by [create-ssafs-pup_census.R](R/create-ssafs-pup_census.R) to create the full SSAFS Pup Census data set. Specifically:
