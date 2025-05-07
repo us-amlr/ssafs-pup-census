@@ -1,21 +1,17 @@
 # ssafs-pup-census
 
-<!-- badges: start 
-[![DwCA](https://img.shields.io/badge/DwC–A%20Dataset-10.48361/gklk1u-violet)](https://doi.org/10.48361/gklk1u)
--->
-DwCA DOI: in progress 
+<!-- badges: start -->
+[![DwCA](https://img.shields.io/badge/DwC–A%20Dataset-10.15468/kngcq4-violet)](https://doi.org/10.15468/kngcq4)
 [![DOI](https://zenodo.org/badge/713157807.svg)](https://doi.org/10.5281/zenodo.15320134)
 <!-- badges: end -->
 
-South Shetland Antarctic fur seal (SSAFS) total synoptic pup counts. This repository is an R project that contains the data, code, and documentation relevant to the SSAFS pup census data set. Repo contents and structure are described below.
+South Shetland Antarctic fur seal (SSAFS) total synoptic pup counts. This repository is an R project that contains the data, code, and documentation relevant to the SSAFS pup census data set. This project uses [renv](https://github.com/rstudio/renv/) to manage the project environment. Users can clone this repo and run `renv::restore()` as described in the [renv docs](https://rstudio.github.io/renv/). Repo contents and structure are described below.
 
-These data are in the process of being published to the SCAR Antarctic Biodiversity Portal at [biodiversity.aq](https://www.biodiversity.aq/).
+As shown in the badging, the repository is linked to Zenodo and generates a Zenodo DOI on each release. However, we ask users of these data to instead cite the OBIS/GBIF dataset. This dataset has been published to the SCAR Antarctic Biodiversity Portal at [biodiversity.aq](https://www.biodiversity.aq/), and is reliably available via the following links: [https://doi.org/10.15468/kngcq4](https://doi.org/10.15468/kngcq4), or [https://ipt-obis.gbif.us/resource?r=usamlr-ssafs-pup-census](https://ipt-obis.gbif.us/resource?r=usamlr-ssafs-pup-census)
 
 An earlier version of this data set was published in [Krause et al. 2022](https://doi.org/10.3389/fmars.2021.796488). See this manuscript for additional descriptions of or references to methods, other context, etc.
 
 Meeting notes and decisions can be found [here](https://docs.google.com/document/d/1MU3mVxg_tjE_4HEOOJUf_ttoTV5eUMsgirkhnyg0oZY/edit?usp=sharing) (project authors only).
-
-This project uses [renv](https://github.com/rstudio/renv/) to manage the project environment. Users can clone this repo and run `renv::restore()` as described in the [renv docs](https://rstudio.github.io/renv/).
 
 ## Repo structure
 
@@ -32,15 +28,15 @@ This project uses [renv](https://github.com/rstudio/renv/) to manage the project
 ├── renv       : renv files, for managing renv environment
 ```
 
-## data
+### data
 
 The [data](data) directory contains SSAFS pup census input data files, the full and standardized data set, and the Darwin Core Archive files.
 
-### dwca
+#### dwca
 
 SSAFS Pup Census Darwin Core Archive files. These data are published at <in progress>. These files were generated using [data-to-dwca.R](R/data-to-dwca.R).
 
-### ssafs-pup-counts-full.csv
+#### ssafs-pup-counts-full.csv
 
 [ssafs-pup-counts-full.csv](data/ssafs-pup-counts-full.csv) is the full SSAFS Pup Census data set, presented as a long data CSV file. It is created by [create-ssafs-pup-census-full.R](R/create-ssafs-pup-census-full.R). This file contains the following columns:
 
@@ -54,7 +50,7 @@ SSAFS Pup Census Darwin Core Archive files. These data are published at <in prog
 
 -   season_year: The 'AMLR year' of the austral summer field season. The AMLR year is the year that begins in January. For instance, for the '2000/01' season, the AMLR year is '2001.
 
-### input
+#### input
 
 Input files used by [create-ssafs-pup-census-full.R](R/create-ssafs-pup-census-full.R) to create the full SSAFS Pup Census data set. Specifically:
 
