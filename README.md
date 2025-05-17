@@ -10,7 +10,7 @@ Meeting notes and decisions can be found [here](https://docs.google.com/document
 
 This project uses [renv](https://github.com/rstudio/renv/) to manage the project environment. Users can clone this repo and run `renv::restore()` as described in the [renv docs](https://rstudio.github.io/renv/).
 
-## Repo structure
+## Repo S tructure
 
 ```
 ├── data
@@ -25,15 +25,15 @@ This project uses [renv](https://github.com/rstudio/renv/) to manage the project
 ├── renv       : renv files, for managing renv environment
 ```
 
-## data
+### data
 
 The [data](data) directory contains SSAFS pup census input data files, the full and standardized data set, and the Darwin Core Archive files.
 
-### dwca
+#### dwca
 
 SSAFS Pup Census Darwin Core Archive files. These data are published at <in progress>. These files were generated using [data-to-dwca.R](R/data-to-dwca.R).
 
-### ssafs-pup-counts-full.csv
+#### ssafs-pup-counts-full.csv
 
 [ssafs-pup-counts-full.csv](data/ssafs-pup-counts-full.csv) is the full SSAFS Pup Census data set, presented as a long data CSV file. It is created by [create-ssafs-pup-census-full.R](R/create-ssafs-pup-census-full.R). This file contains the following columns:
 
@@ -47,13 +47,27 @@ SSAFS Pup Census Darwin Core Archive files. These data are published at <in prog
 
 -   season_year: The 'AMLR year' of the austral summer field season. The AMLR year is the year that begins in January. For instance, for the '2000/01' season, the AMLR year is '2001.
 
-### input
+#### input
 
 Input files used by [create-ssafs-pup-census-full.R](R/create-ssafs-pup-census-full.R) to create the full SSAFS Pup Census data set. Specifically:
 
 -   [supptable1-counts.csv](data/input/supptable1-counts.csv) contains the counts from [Krause et al. 2022](https://doi.org/10.3389/fmars.2021.796488) Supplementary Table 1, copied as long data into a CSV file. [supptable1-references.csv](data/input/supptable1-references.csv) is the reference key for the letter-reference pairs presented in Supplementary Table 1. The data in these CSV files can be joined using the 'ReferenceLetter' column.
 
 -   [other-counts.csv](data/input/other-counts.csv) contains other SSAFS pup census counts. Here, 'other counts' means counts that are not a) presented in [Krause et al. 2022](https://doi.org/10.3389/fmars.2021.796488) Supplementary Table 1, or b) of SSAFS at Cape Shirreff recorded in the U.S. AMLR Pinnipeds database.
+
+## Updating
+
+This section contains notes for U.S. AMLR staff using this repository to update and publish the SSAFS Pup Census tables, e.g. after a field season.
+
+1) If necessary, add any new STI or SSI counts to [other-counts.csv](data/input/other-counts.csv). Any new CS counts will be pulled from the the pinniped database
+
+2) Run the [create-ssafs-pup-census-full.R](R/create-ssafs-pup-census-full.R) script. This writes a new [ssafs-pup-counts-full.csv](data/ssafs-pup-counts-full.csv) file to the 'data' folder
+
+3) Restart R (optional, but recommended). Run the [data_to_dwca.R](R/data-to-dwca.R) script. This writes new Darwin Core Archive tables to the 'data/dwca' folder
+
+4) Push changes to GitHub. Create a new tag + release so a new Zenodo DOI is made.
+
+5) Email the [SCAR Biodiversity Portal](biodiversity.aq) folks to scrape and publish updated files from <https://github.com/us-amlr/ssafs-pup-census/tree/main/data/dwca>
 
 ## Disclaimer
 

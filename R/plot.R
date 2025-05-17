@@ -12,7 +12,7 @@ data <- read.csv(here("data", "ssafs-pup-counts-full.csv"))
 
 # Set factor levels for "Location"
 fac <- c('SSI','CS','STI')
-lab <- c("South Shetland Islands", "Cape Shirreff","San Telmo Islands")
+lab <- c("South Shetland Islands", "Cape Shirreff","San Telmo Island")
 stopifnot(all(data$location %in% fac))
 
 # Create a color blind friendly pallette
@@ -33,6 +33,7 @@ data.plot <- ggplot(data, aes(x = season_year, y = count,
   #geom_errorbar(aes(ymin=Pups-sd, ymax=Pups+sd), colour="black", width=.1) +
   xlab("Year") +
   ylab("Pup Count") +
+  ggtitle("South Shetland Antarctic Fur Seal - Pup Census") + 
   scale_colour_manual(name = "Location", # Legend label for line
                       breaks = fac,
                       labels = lab,
@@ -40,11 +41,9 @@ data.plot <- ggplot(data, aes(x = season_year, y = count,
   scale_shape_discrete(name = "Location", # Legend label for points
                        breaks = fac,
                        labels = lab) +
-  #legend theme values should be between 0 and 1. 
-  #c(0,0) corresponds to the "bottom left" 
-  #and c(1,1) corresponds to the "top right" position.
   theme(legend.justification = c(0.02, 0.98),
-        legend.position = c(0.02, 0.98))     
+        legend.position = "inside", 
+        legend.position.inside = c(0.02, 0.98))     
 data.plot
 
 ## Save plot
@@ -53,6 +52,7 @@ ggsave(
   width = 5.8, height = 4, units = 'in', dpi = 300
 )
 
+data.plot
 
 # ## Hires plot
 # tiff("Plotname.tiff", width = 5.8, height = 4, units = 'in', res = 300)
