@@ -1,8 +1,13 @@
 # ssafs-pup-census
 
-South Shetland Antarctic fur seal (SSAFS) total synoptic pup counts. This repository is an R project that contains the data, code, and documentation relevant to the SSAFS pup census data set. Repo contents and structure are described below.
+<!-- badges: start -->
+[![DwCA](https://img.shields.io/badge/DwC–A%20Dataset-10.15468/kngcq4-violet)](https://doi.org/10.15468/kngcq4)
+[![DOI](https://zenodo.org/badge/713157807.svg)](https://doi.org/10.5281/zenodo.15320134)
+<!-- badges: end -->
 
-These data are in the process of being published to the SCAR Antarctic Biodiversity Portal at [biodiversity.aq](https://www.biodiversity.aq/).
+South Shetland Antarctic fur seal (SSAFS) total synoptic pup counts. This repository is an R project that contains the data, code, and documentation relevant to the SSAFS pup census data set. This project uses [renv](https://github.com/rstudio/renv/) to manage the project environment. Users can clone this repo and run `renv::restore()` as described in the [renv docs](https://rstudio.github.io/renv/). Repo contents and structure are described below.
+
+As shown in the badging, the repository is linked to Zenodo and generates a Zenodo DOI on each release. However, we ask users of these data to instead cite the OBIS/GBIF dataset. This dataset has been published to the SCAR Antarctic Biodiversity Portal at [biodiversity.aq](https://www.biodiversity.aq/), and is reliably available via the following links: [https://doi.org/10.15468/kngcq4](https://doi.org/10.15468/kngcq4), or [https://ipt-obis.gbif.us/resource?r=usamlr-ssafs-pup-census](https://ipt-obis.gbif.us/resource?r=usamlr-ssafs-pup-census)
 
 An earlier version of this data set was published in [Krause et al. 2022](https://doi.org/10.3389/fmars.2021.796488). See this manuscript for additional descriptions of or references to methods, other context, etc.
 
