@@ -15,7 +15,7 @@ Meeting notes and decisions can be found [here](https://docs.google.com/document
 
 This project uses [renv](https://github.com/rstudio/renv/) to manage the project environment. Users can clone this repo and run `renv::restore()` as described in the [renv docs](https://rstudio.github.io/renv/).
 
-## Repo S tructure
+## Repo Structure
 
 ```
 ├── data

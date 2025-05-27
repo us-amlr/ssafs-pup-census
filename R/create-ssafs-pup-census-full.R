@@ -56,10 +56,10 @@ supp.table1 <- left_join(st1.counts, st1.refs,
 con <- dbConnect(odbc(), filedsn = here("amlr-pinniped-db-prod.dsn"))
 cs.counts.view <- tbl(con, "vCensus_AFS_Capewide_Pup") %>%
   filter(exclude_count == 0) %>%
-  filter(season_name != "2024/25") %>%
   arrange(census_date, observer, location) %>%
   collect()
 
+# View the dates of different field seasons, if desired
 dates <- cs.counts.view %>% 
   filter(census_date > as.Date("2008-07-01")) %>% 
   group_by(season_name) %>% 
@@ -69,7 +69,41 @@ dates <- cs.counts.view %>%
                                               units = "days")), 
             .groups = "drop")
 
-cs.counts <- cwp_total(cs.counts.view) %>%
+
+
+### TEMPORARY: combine Ballena S/N records for observers
+# d <- cs.counts.view %>% 
+#   filter(str_starts(location, "Ball")) %>% 
+#   arrange(season_name, location)
+# table(cs.counts.view$location)
+x.ballena <- cs.counts.view %>% 
+  filter(location %in% c("Ballena Norte", "Ballena Sur")) %>% 
+  # x.ballena %>% group_by(season_name, observer) %>% summarise(n())
+  group_by(observer, season_name) %>% 
+  summarise(across(c(census_type, census_date, species, exclude_count, 
+                     research_program, season_info_id), 
+                   unique), 
+            time_start = hms::as_hms(min(time_start)), 
+            time_end = hms::as_hms(max(time_end)), 
+            location = "Ballena", 
+            census_afs_capewide_pup_sort = 13, 
+            across(pup_count:pup_dead_count, sum), 
+            census_id = NA_integer_, 
+            beach_id = NA_integer_, 
+            # census_notes = case_when(
+            #   all(is.na(census_notes)) ~ NA_character_, 
+            #   all(!is.na(census_notes)) ~ paste(census_notes, collapse = "; "), 
+            #   sum(is.na(census_notes)) == 1 ~ as.character(na.omit(census_notes))
+            # ), 
+            census_notes = NA_character_, 
+            .groups = "drop") %>% 
+  arrange(season_name, observer)
+
+# Calculate census counts for 
+cs.counts <- cs.counts.view %>% 
+  filter(!(location %in% c("Ballena Norte", "Ballena Sur"))) %>% 
+  bind_rows(x.ballena) %>% 
+  cwp_total() %>%
   mutate(count_mean = round_logical(count_mean, 0),
          count_sd = round_logical(count_sd, 2), 
          location = "CS", 
