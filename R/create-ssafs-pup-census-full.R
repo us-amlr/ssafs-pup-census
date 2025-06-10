@@ -117,7 +117,7 @@ cs.counts <- cs.counts.view %>%
 # Import 'other' counts, meaning counts not in supp table 1 or ***REMOVED***
 # E.g.,  STI counts
 other.counts <- read_csv(here(path.in, "other-counts.csv"), 
-                         col_types = "cDcddc") %>% 
+                         col_types = "cccddc") %>% 
   select(-census_date)
 
 stopifnot(
