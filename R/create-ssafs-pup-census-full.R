@@ -99,7 +99,7 @@ x.ballena <- cs.counts.view %>%
             .groups = "drop") %>% 
   arrange(season_name, observer)
 
-# Calculate census counts for 
+# Calculate census counts for the rest
 cs.counts <- cs.counts.view %>% 
   filter(!(location %in% c("Ballena Norte", "Ballena Sur"))) %>% 
   bind_rows(x.ballena) %>% 
@@ -114,7 +114,7 @@ cs.counts <- cs.counts.view %>%
 
 
 #-------------------------------------------------------------------------------
-# Import 'other' counts, meaning counts not in supp table 1 or ***REMOVED***
+# Import 'other' counts, meaning counts not in supp table 1 or database
 # E.g.,  STI counts
 other.counts <- read_csv(here(path.in, "other-counts.csv"), 
                          col_types = "cccddc") %>% 
